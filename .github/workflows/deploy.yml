@@ -34,7 +34,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3
-        run: aws s3 sync omnistore-ui/dist s3://${{ secrets.S3_BUCKET }} --delete
+        run: |
+          bash -c "aws s3 sync omnistore-ui/dist s3://${{ secrets.S3_BUCKET }} --delete"
+
 
 
       - name: Invalidate CloudFront
