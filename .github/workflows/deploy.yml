@@ -1,39 +1,46 @@
-name : Deploy Frontend
-on :
-  push :
-    branches :
-      - main  
+name: Deploy Frontend
 
-jobs :
-  deploy :
-    runs-on : ubuntu-latest 
-  steps :
-    - name : Checkout repository
-      uses : actions/checkout@v4 
+on:
+  push:
+    branches:
+      - main
 
-    - name : Setup Node.js
-      uses : actions/setup-node@v4 
-      with :
-        node-version : 20 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-    - name : Install dependencies
-      working-directory : omnistore-ui 
-      run : npm ci 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name : Build frontend
-      working-directory : omnistore-ui 
-      run : npm run build 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - name : Configure AWS credentials
-      uses : aws-actions/configure-aws-credentials@v4 
-      with :
-        aws-access-key-id : ${{ secrets.AWS_ACCESS_KEY_ID }} 
-        aws-secret-access-key : ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
-        aws-region : ${{ secrets.AWS_REGION }} 
+      - name: Install dependencies
+        working-directory: omnistore-ui
+        run: npm ci
 
+      - name: Build frontend
+        working-directory: omnistore-ui
+        run: npm run build
 
-    - name: Deploy to S3 
-      run : aws_s3 sync omnistore-ui/dist s3://${{secrets.S3_BUCKET}} --delete
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-    - name : Invalidate CloudFront
-      run : aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      - name: Deploy to S3
+        shell: bash
+        run: |
+          aws s3 sync omnistore-ui/dist "s3://${{ secrets.S3_BUCKET }}" --delete
+
+      - name: Invalidate CloudFront
+        shell: bash
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"
