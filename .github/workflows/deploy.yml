@@ -1,4 +1,4 @@
-name: Deploy OmniStore Frontend
+name: Deploy Frontend
 
 on:
   push:
@@ -19,9 +19,11 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        working-directory: omnistore-ui
+        run: npm ci
 
-      - name: Build React app
+      - name: Build frontend
+        working-directory: omnistore-ui
         run: npm run build
 
       - name: Configure AWS credentials
@@ -32,9 +34,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3
-        run: aws s3 sync dist/ s3://${{ secrets.S3_BUCKET }} --delete
+        run: |
+          aws s3 sync omnistore-ui/dist s3://${{ secrets.S3_BUCKET }} --delete
 
-      - name: Invalidate CloudFront cache
-        run: aws cloudfront create-invalidation \
-              --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} \
-              --paths "/*"
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
