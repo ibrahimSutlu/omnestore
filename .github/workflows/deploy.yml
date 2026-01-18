@@ -1,4 +1,4 @@
-name: Deploy OmniStore
+name: Deploy OmniStore via Bastion
 
 on:
   push:
@@ -12,22 +12,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy files to Private EC2
+      - name: Copy project to Bastion
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_PRIVATE_IP }}
+          host: ${{ secrets.BASTION_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "."
           target: "/home/ubuntu/omnistore"
 
-      - name: Run deploy script on EC2
+      - name: Deploy from Bastion to Private EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_PRIVATE_IP }}
+          host: ${{ secrets.BASTION_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/omnistore
-            ./deploy.sh
-
+            set -e
+            echo "Connecting to private EC2..."
+            ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PRIVATE_IP }} << 'EOF'
+              cd /home/ubuntu/omnistore
+              ./deploy.sh
+            EOF
