@@ -7,7 +7,10 @@ resource "aws_vpc" "my_vpc" {
     Name = "${var.project_name}-vpc"
   }
 }
-
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
 #SUBNETS
 resource "aws_subnet" "public_subnet" {
   count = length(var.public_subnets)
@@ -49,80 +52,80 @@ resource "aws_subnet" "private_data" {
 
 #############################################
 # AWS instance 
-# resource "aws_instance" "my_instance" {
-#   ami           = "ami-0c398cb65a93047f2"
-#   instance_type = "t3.micro"
-#   subnet_id     = aws_subnet.public_subnet[0].id
-#   security_groups = [aws_security_group.my_security_group.id]
-#   associate_public_ip_address = true
-#   key_name = aws_key_pair.omnistore_key.key_name
+resource "aws_instance" "my_instance" {
+  ami           = "ami-0c398cb65a93047f2"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public_subnet[0].id
+  security_groups = [aws_security_group.my_security_group.id]
+  associate_public_ip_address = true
+  key_name = aws_key_pair.omnistore_key.key_name
 
-#   source_dest_check = false
-#   tags = {
-#     Name = "tf-example"
-#   }
-#     user_data = <<-EOF
-#     #!/bin/bash
-#     echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
-#     sysctl -p
+  source_dest_check = false
+  tags = {
+    Name = "tf-example"
+  }
+    user_data = <<-EOF
+    #!/bin/bash
+    echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+    sysctl -p
 
 
-#     sudo iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
-#     sudo iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-#     sudo iptables -A FORWARD -j ACCEPT
+    sudo iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
+    sudo iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    sudo iptables -A FORWARD -j ACCEPT
 
-#   EOF
-# }
+  EOF
+}
 
-# resource "aws_instance" "myprivate_instance" {
-#   ami           = "ami-0c398cb65a93047f2"
-#   instance_type = "t3.micro"
-#   subnet_id     = aws_subnet.private_app[0].id
-#   security_groups = [aws_security_group.private_ec2_sg.id]
-#   associate_public_ip_address = false
-#   key_name = aws_key_pair.omnistore_key.key_name
+resource "aws_instance" "myprivate_instance" {
+  ami           = "ami-0c398cb65a93047f2"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.private_app[0].id
+  security_groups = [aws_security_group.private_ec2_sg.id]
+  associate_public_ip_address = false
+  key_name = aws_key_pair.omnistore_key.key_name
 
-#   source_dest_check = false
-#   tags = {
-#     Name = "tf-private-example"
-#   }
-# user_data = <<-EOF
-#       #!/bin/bash
-#       set -eux
+  source_dest_check = false
+  tags = {
+    Name = "tf-private-example"
+  }
+user_data = <<-EOF
+      #!/bin/bash
+      set -eux
 
-#       # NAT üzerinden internet gelene kadar bekle
-#       until curl -s --head http://archive.ubuntu.com | grep "200 OK"; do
-#         echo "Waiting for NAT internet access..."
-#         sleep 5
-#       done
+      # NAT üzerinden internet gelene kadar bekle
+      until curl -s --head http://archive.ubuntu.com | grep "200 OK"; do
+        echo "Waiting for NAT internet access..."
+        sleep 5
+      done
 
-#       # Paket listesi
-#       sudo apt-get update -y
+      # Paket listesi
+      sudo apt-get update -y
 
-#       # NGINX kur
-#       sudo apt-get install -y nginx
+      # NGINX kur
+      sudo apt-get install -y nginx
 
-#       # Servisi başlat ve kalıcı yap
-#       sudo systemctl start nginx
-#       sudo systemctl enable nginx
+      # Servisi başlat ve kalıcı yap
+      sudo systemctl start nginx
+      sudo systemctl enable nginx
 
-#       # Test sayfası
-#       cat <<HTML > /var/www/html/index.html
-#       <!DOCTYPE html>
-#       <html>
-#       <head>
-#         <title>OmniStore</title>
-#       </head>
-#       <body>
-#         <h1>HELLO FROM OMNISTORE (NGINX)</h1>
-#       </body>
-#       </html>
-#       HTML
+      # Test sayfası
+      cat <<HTML > /var/www/html/index.html
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>OmniStore</title>
+      </head>
+      <body>
+        <h1>HELLO FROM OMNISTORE (NGINX)</h1>
+      </body>
+      </html>
+      HTML
 
-#       # NGINX reload
-#       sudo systemctl reload nginx
-#       EOF
-# }
+      # NGINX reload
+      sudo systemctl reload nginx
+      EOF
+}
 #############################################
 # SECURITY GROUP instance 
 resource "aws_security_group" "private_ec2_sg" {
@@ -247,49 +250,49 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-# resource "aws_route_table" "private_rt" {
-#   vpc_id = aws_vpc.my_vpc.id
-#   route {
-#     # HEDEF: Tüm internet (Dünyadaki herhangi bir IP)
-#     cidr_block = "0.0.0.0/0"
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.my_vpc.id
+  route {
+    # HEDEF: Tüm internet (Dünyadaki herhangi bir IP)
+    cidr_block = "0.0.0.0/0"
     
-#     # YÖNLENDİRİLECEK YER: NAT Instance'ın Ağ Kartı (ENI)
-#     # Burası kritik! Instance ID değil, Network Interface ID kullanıyoruz.
-#     network_interface_id = aws_instance.my_instance.primary_network_interface_id
-#   }
-#   tags = {
-#     Name = "${var.project_name}-private-rt"
-#   }
-# }
+    # YÖNLENDİRİLECEK YER: NAT Instance'ın Ağ Kartı (ENI)
+    # Burası kritik! Instance ID değil, Network Interface ID kullanıyoruz.
+    network_interface_id = aws_instance.my_instance.primary_network_interface_id
+  }
+  tags = {
+    Name = "${var.project_name}-private-rt"
+  }
+}
 
-# resource "aws_eip_association" "nat_eip_assoc" {
-#   instance_id   = aws_instance.my_instance.id
-#   allocation_id = aws_eip.my_eip.id
-# }
+resource "aws_eip_association" "nat_eip_assoc" {
+  instance_id   = aws_instance.my_instance.id
+  allocation_id = aws_eip.my_eip.id
+}
 
-# resource "aws_route" "public_internet_access" {
-#   route_table_id         = aws_route_table.public_rt.id
-#   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_internet_gateway.my_igw.id
-# }
+resource "aws_route" "public_internet_access" {
+  route_table_id         = aws_route_table.public_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.my_igw.id
+}
 
-# resource "aws_route_table_association" "public_assoc" {
-#   count          = length(aws_subnet.public_subnet)
-#   subnet_id      = aws_subnet.public_subnet[count.index].id
-#   route_table_id = aws_route_table.public_rt.id
-# }
+resource "aws_route_table_association" "public_assoc" {
+  count          = length(aws_subnet.public_subnet)
+  subnet_id      = aws_subnet.public_subnet[count.index].id
+  route_table_id = aws_route_table.public_rt.id
+}
 
-# resource "aws_route_table_association" "private_app_assoc" {
-#   count          = length(aws_subnet.private_app)
-#   subnet_id      = aws_subnet.private_app[count.index].id
-#   route_table_id = aws_route_table.private_rt.id
-# }
+resource "aws_route_table_association" "private_app_assoc" {
+  count          = length(aws_subnet.private_app)
+  subnet_id      = aws_subnet.private_app[count.index].id
+  route_table_id = aws_route_table.private_rt.id
+}
 
-# resource "aws_route_table_association" "private_data_assoc" {
-#   count          = length(aws_subnet.private_data)
-#   subnet_id      = aws_subnet.private_data[count.index].id
-#   route_table_id = aws_route_table.private_rt.id
-# }
+resource "aws_route_table_association" "private_data_assoc" {
+  count          = length(aws_subnet.private_data)
+  subnet_id      = aws_subnet.private_data[count.index].id
+  route_table_id = aws_route_table.private_rt.id
+}
 
 # NAT GATEWAY
 
@@ -325,13 +328,13 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
-# resource "aws_lb" "omnistore_alb" {
-#   name               = "${var.project_name}-alb"
-#   load_balancer_type = "application"
-#   internal           = false
-#   subnets = aws_subnet.public_subnet[*].id
-#   security_groups = [aws_security_group.alb_sg.id]
-# }
+resource "aws_lb" "omnistore_alb" {
+  name               = "${var.project_name}-alb"
+  load_balancer_type = "application"
+  internal           = false
+  subnets = aws_subnet.public_subnet[*].id
+  security_groups = [aws_security_group.alb_sg.id]
+}
 
 resource "aws_lb_target_group" "app_tg" {
   name     = "${var.project_name}-tg"
@@ -340,26 +343,26 @@ resource "aws_lb_target_group" "app_tg" {
   vpc_id   =  aws_vpc.my_vpc.id
 }
 
-# resource "aws_lb_listener" "http" {
-#   load_balancer_arn = aws_lb.omnistore_alb.arn
-#   port              = 80
-#   protocol          = "HTTP"
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.omnistore_alb.arn
+  port              = 80
+  protocol          = "HTTP"
 
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.app_tg.arn
-#   }
-# }
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
 
-# output "alb_dns_name" {
-#   value = aws_lb.omnistore_alb.dns_name
-# }
+output "alb_dns_name" {
+  value = aws_lb.omnistore_alb.dns_name
+}
 
-# resource "aws_lb_target_group_attachment" "test" {
-#   target_group_arn = aws_lb_target_group.app_tg.arn
-#   target_id        = aws_instance.myprivate_instance.id
-#   port             = 80
-# }
+resource "aws_lb_target_group_attachment" "test" {
+  target_group_arn = aws_lb_target_group.app_tg.arn
+  target_id        = aws_instance.myprivate_instance.id
+  port             = 80
+}
 
 #############################################
 resource "aws_eip" "my_eip" {
@@ -371,8 +374,90 @@ resource "aws_eip" "my_eip" {
 }
 
 
+#####AWS ACM CERTIFICATE#####
+data "aws_route53_zone" "main" {
+  name         = "omnestore.org"
+  private_zone = false
+}
 
 
+data "aws_acm_certificate" "frontend" {
+  provider    = aws.us_east_1
+  domain      = "omnestore.org"
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
+resource "aws_cloudfront_distribution" "frontend" {
+  enabled         = true
+  is_ipv6_enabled = true
 
+  #  default_root_object = "index.html"
 
+  ############################
+  # 2️⃣ ALTERNATE DOMAIN NAMES
+  ############################
+  aliases = [
+    "omnestore.org",
+    "www.omnestore.org"
+  ]
 
+  ############################
+  # 1️⃣ ORIGIN – S3 WEBSITE
+  origin {
+    domain_name = aws_lb.omnistore_alb.dns_name
+    origin_id   = "alb-origin"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "alb-origin"
+
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+  }
+
+  price_class = "PriceClass_100"
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  ############################
+  # 3️⃣ SSL CERTIFICATE (ACM)
+  ############################
+  viewer_certificate {
+    acm_certificate_arn      = data.aws_acm_certificate.frontend.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
+}
+resource "aws_route53_record" "root_alias" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "omnestore.org"
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.frontend.domain_name
+    zone_id                = aws_cloudfront_distribution.frontend.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+output "cloudfront_url" {
+  value = "https://${aws_cloudfront_distribution.frontend.domain_name}"
+}

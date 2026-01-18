@@ -1,46 +1,33 @@
-name: Deploy Frontend
+name: Deploy OmniStore
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Copy files to Private EC2
+        uses: appleboy/scp-action@v0.1.7
         with:
-          node-version: 20
+          host: ${{ secrets.EC2_PRIVATE_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "."
+          target: "/home/ubuntu/omnistore"
 
-      - name: Install dependencies
-        working-directory: omnistore-ui
-        run: npm ci
-
-      - name: Build frontend
-        working-directory: omnistore-ui
-        run: npm run build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Run deploy script on EC2
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          host: ${{ secrets.EC2_PRIVATE_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/omnistore
+            ./deploy.sh
 
-      - name: Deploy to S3
-        shell: bash
-        run: |
-          aws s3 sync omnistore-ui/dist "s3://${{ secrets.S3_BUCKET }}" --delete
-
-      - name: Invalidate CloudFront
-        shell: bash
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
-            --paths "/*"
