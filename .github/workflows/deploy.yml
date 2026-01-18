@@ -21,7 +21,7 @@ jobs:
           source: "."
           target: "/home/ubuntu/omnistore"
 
-      - name: Deploy from Bastion to Private EC2
+      - name: Deploy from Bastion
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_PUBLIC_IP }}
@@ -29,9 +29,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            echo "Connecting to private EC2..."
-            ssh -i ~/.ssh/omnistore-key -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PRIVATE_IP }} << 'EOF'
-              cd /home/ubuntu/omnistore
-              ./deploy.sh
-            EOF
-
+            cd /home/ubuntu/omnistore
+            ./deploy.sh
