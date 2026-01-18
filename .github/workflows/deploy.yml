@@ -30,7 +30,8 @@ jobs:
           script: |
             set -e
             echo "Connecting to private EC2..."
-            ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PRIVATE_IP }} << 'EOF'
+            ssh -i ~/.ssh/omnistore-key -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PRIVATE_IP }} << 'EOF'
               cd /home/ubuntu/omnistore
               ./deploy.sh
             EOF
+
