@@ -1,10 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <title>OmniStore CI/CD</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OmniStore</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 920px; margin: 40px auto; padding: 0 16px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; margin-top: 14px; }
+    code { background: #f3f4f6; padding: 2px 6px; border-radius: 6px; }
+    .pill { display:inline-block; background:#eef2ff; padding:6px 10px; border-radius:999px; margin-right:8px; }
+  </style>
 </head>
 <body>
-  <h1>HELLO FROM OMNISTORE</h1>
-  <p>Deployed OLDUUUUUUUUUUUUUUUUU via GitHub33231231</p>
+  <h1>OmniStore</h1>
+  <p><b>Terraform tabanlı AWS Cloud Architecture</b> — Security + CI/CD + FinOps odaklı.</p>
+
+  <div class="card">
+    <h3>🧱 Mimari</h3>
+    <p>
+      <span class="pill">CloudFront</span>
+      <span class="pill">ALB</span>
+      <span class="pill">Private EC2 (Docker)</span>
+      <span class="pill">Bastion</span>
+    </p>
+    <p>Traffic: <code>CloudFront → ALB → Private EC2</code></p>
+  </div>
+
+  <div class="card">
+    <h3>🔐 Security</h3>
+    <ul>
+      <li>Uygulama sunucuları <b>private subnet</b> içinde ve <b>public IP yok</b></li>
+      <li>SSH erişimi yalnızca <b>Bastion Host</b> üzerinden</li>
+      <li>ALB tek ingress noktası (least-privilege SG)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💰 FinOps</h3>
+    <ul>
+      <li>NAT Gateway yerine <b>NAT Instance</b> (maliyet optimizasyonu)</li>
+      <li>Terraform ile <b>destroy/apply</b> — idle resource önleme</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🚀 CI/CD</h3>
+    <p>Deploy pipeline: <code>GitHub Actions → Bastion → Private EC2</code></p>
+    <p><b>Last Deploy:</b> <span id="deploy">manual</span></p>
+  </div>
+
+  <script>
+    // İstersen buraya pipeline’dan deploy zamanı yazdırabiliriz
+    document.getElementById("deploy").innerText = new Date().toLocaleString();
+  </script>
 </body>
 </html>
