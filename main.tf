@@ -20,6 +20,7 @@ provider "aws" {
 
 module "vpc" {
   source = "./modules/vpc"
+  bastion_ssh_private_key = var.bastion_ssh_private_key
 
   cidr_block = "10.0.0.0/16"
 

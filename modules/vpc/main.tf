@@ -64,17 +64,42 @@ resource "aws_instance" "my_instance" {
   tags = {
     Name = "tf-example"
   }
-    user_data = <<-EOF
+  user_data = <<-EOF
     #!/bin/bash
+    set -e
+
+    ##################################
+    # 1️⃣ MEVCUT NAT AYARLARI (DOKUNMADIK)
+    ##################################
+
     echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
     sysctl -p
-
 
     sudo iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
     sudo iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
     sudo iptables -A FORWARD -j ACCEPT
 
-  EOF
+    ##################################
+    # 2️⃣ SSH KEY OLUŞTUR (YENİ EK)
+    ##################################
+
+    USER=ubuntu
+    SSH_DIR=/home/$USER/.ssh
+
+    mkdir -p $SSH_DIR
+    chmod 700 $SSH_DIR
+
+    cat <<'KEY' > $SSH_DIR/omnistore-key
+    ${var.bastion_ssh_private_key}
+    KEY
+
+    chmod 600 $SSH_DIR/omnistore-key
+    chown -R $USER:$USER $SSH_DIR
+
+    ##################################
+    # DONE
+    ##################################
+    EOF
 }
 
 resource "aws_instance" "myprivate_instance" {

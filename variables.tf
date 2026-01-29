@@ -7,3 +7,9 @@ variable "aws_alias" {
   type    = string
   default = "us_east_1"
 }
+variable "bastion_ssh_private_key" {
+  description = "Private SSH key for bastion to access private EC2"
+  type        = string
+  sensitive   = true
+}
+
