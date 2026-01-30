@@ -66,6 +66,7 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 ---
 
 ## 📂 Repository Yapısı
+```text
 omnistore/
 ├── .github/
 │   └── workflows/
@@ -92,6 +93,6 @@ omnistore/
 │   ├── dist/                   # Build çıktısı
 │   ├── Dockerfile              # Frontend containerization
 │   └── nginx/                  # Opsiyonel reverse proxy / ingress config
-_toggle
+│
 ├── .gitignore                  # Gereksiz dosyalar
 └── README.md                   # Proje dokümantasyonu
