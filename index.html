@@ -1,57 +1,726 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OmniStore</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OmniStore — Modern E-Ticaret</title>
+  <meta name="description" content="OmniStore — modern e-ticaret deneyimi. Hızlı teslimat, güvenli ödeme, kolay iade." />
+
   <style>
-    body { font-family: Arial, sans-serif; max-width: 920px; margin: 40px auto; padding: 0 16px; }
-    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; margin-top: 14px; }
-    code { background: #f3f4f6; padding: 2px 6px; border-radius: 6px; }
-    .pill { display:inline-block; background:#eef2ff; padding:6px 10px; border-radius:999px; margin-right:8px; }
+    :root{
+      --bg: #0b1020;
+      --bg2:#0a0f1f;
+      --card:#0f1732;
+      --card2:#0d1530;
+      --text:#e7eaf3;
+      --muted:#aab2c5;
+      --border:rgba(255,255,255,.08);
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --accent:#7c3aed;      /* violet */
+      --accent2:#22c55e;     /* green */
+      --warn:#f59e0b;        /* amber */
+      --danger:#ef4444;      /* red */
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 500px at 10% -10%, rgba(124,58,237,.35), transparent 60%),
+        radial-gradient(700px 500px at 90% 0%, rgba(34,197,94,.22), transparent 55%),
+        radial-gradient(900px 600px at 50% 120%, rgba(59,130,246,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--text);
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;padding:10px 0 18px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.02em;
+      font-size:18px;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,197,94,.75));
+      box-shadow: 0 12px 28px rgba(124,58,237,.22);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute;inset:10px;
+      border-radius:10px;border:1px solid rgba(255,255,255,.35);
+      opacity:.7;
+    }
+
+    .nav{
+      display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+      color:var(--muted);font-size:14px;
+    }
+    .nav a{padding:8px 10px;border-radius:12px}
+    .nav a:hover{background:rgba(255,255,255,.06);color:var(--text)}
+
+    .actions{display:flex;align-items:center;gap:10px}
+    .iconbtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      color:var(--text);
+      cursor:pointer;
+    }
+    .iconbtn:hover{background:rgba(255,255,255,.09)}
+    .pill{
+      font-size:12px;color:rgba(255,255,255,.85);
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+    }
+
+    /* Announcement */
+    .announce{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;border-radius:16px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      box-shadow: 0 12px 40px rgba(0,0,0,.22);
+      margin-bottom:18px;
+    }
+    .announce strong{color:#fff}
+    .tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-size:12px;
+      background:rgba(34,197,94,.15);
+      border:1px solid rgba(34,197,94,.25);
+      color:#d7ffe8;
+      white-space:nowrap;
+    }
+
+    /* Hero */
+    .hero{
+      display:grid;grid-template-columns: 1.15fr .85fr;
+      gap:20px;align-items:stretch;
+      margin:18px 0 26px;
+    }
+    .heroCard{
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      padding:22px;
+      overflow:hidden;
+      position:relative;
+    }
+    .heroCard:before{
+      content:"";
+      position:absolute;inset:-2px;
+      background: radial-gradient(600px 260px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
+                  radial-gradient(480px 240px at 90% 20%, rgba(34,197,94,.22), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .heroInner{position:relative}
+    .hero h1{
+      margin:0 0 8px;
+      font-size:44px;line-height:1.05;letter-spacing:-.03em;
+    }
+    .hero p{
+      margin:10px 0 0;
+      color:var(--muted);font-size:16px;line-height:1.6;
+      max-width: 56ch;
+    }
+    .heroActions{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:12px 14px;border-radius:16px;
+      border:1px solid var(--border);
+      cursor:pointer;
+      font-weight:650;
+    }
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(124,58,237,.55));
+      border-color: rgba(124,58,237,.45);
+      box-shadow: 0 14px 40px rgba(124,58,237,.18);
+    }
+    .btnPrimary:hover{filter:brightness(1.05)}
+    .btnGhost{
+      background:rgba(255,255,255,.06);
+    }
+    .btnGhost:hover{background:rgba(255,255,255,.09)}
+    .kpis{
+      display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;
+      color:rgba(255,255,255,.9);
+    }
+    .kpi{
+      padding:10px 12px;border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.14);
+      backdrop-filter: blur(6px);
+      min-width:150px;
+    }
+    .kpi b{display:block;font-size:16px}
+    .kpi span{display:block;margin-top:2px;font-size:12px;color:var(--muted)}
+
+    .sideCard{
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      padding:18px;
+      display:flex;flex-direction:column;gap:14px;
+    }
+
+    .searchRow{
+      display:flex;gap:10px;align-items:center;
+    }
+    .search{
+      flex:1;
+      padding:12px 14px;border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      color:var(--text);
+      outline:none;
+    }
+    .search::placeholder{color:rgba(170,178,197,.75)}
+    .select{
+      padding:12px 12px;border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      color:var(--text);
+      outline:none;
+      min-width:140px;
+    }
+
+    .promo{
+      border-radius:16px;
+      border:1px solid rgba(245,158,11,.25);
+      background: linear-gradient(180deg, rgba(245,158,11,.12), rgba(245,158,11,.06));
+      padding:14px;
+    }
+    .promo h4{margin:0 0 6px;font-size:14px}
+    .promo p{margin:0;color:rgba(255,255,255,.82);font-size:13px;line-height:1.5}
+    .promo .tiny{margin-top:8px;color:rgba(255,255,255,.65);font-size:12px}
+
+    /* Layout main */
+    .main{
+      display:grid;
+      grid-template-columns: 1fr 340px;
+      gap:20px;
+      align-items:start;
+      margin-top: 18px;
+    }
+
+    /* Products */
+    .sectionTitle{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+      margin: 8px 0 12px;
+    }
+    .sectionTitle h2{margin:0;font-size:18px}
+    .sectionTitle p{margin:0;color:var(--muted);font-size:13px}
+
+    .products{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+
+    .product{
+      border-radius: 18px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      display:flex;flex-direction:column;gap:10px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .product:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+
+    .thumb{
+      height:150px;border-radius:16px;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(120px 80px at 30% 30%, rgba(124,58,237,.40), transparent 70%),
+        radial-gradient(120px 80px at 70% 60%, rgba(34,197,94,.28), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      position:relative;overflow:hidden;
+    }
+    .thumb:after{
+      content:"";
+      position:absolute;inset:0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.25));
+    }
+    .badgeCorner{
+      position:absolute;left:10px;top:10px;
+      z-index:1;
+      font-size:12px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.25);
+      backdrop-filter: blur(6px);
+    }
+
+    .pname{font-weight:750;letter-spacing:-.01em}
+    .pdesc{color:var(--muted);font-size:13px;line-height:1.45;min-height:38px}
+    .row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .price{font-weight:800}
+    .old{
+      color:rgba(170,178,197,.75);
+      text-decoration: line-through;
+      font-weight:600;
+      margin-left:8px;
+      font-size:12px;
+    }
+    .rating{
+      display:flex;align-items:center;gap:6px;
+      color:rgba(255,255,255,.9);font-size:12px;
+    }
+    .stars{color:rgba(245,158,11,.95)}
+    .add{
+      width:100%;
+      padding:11px 12px;border-radius:16px;
+      border:1px solid rgba(124,58,237,.35);
+      background: rgba(124,58,237,.18);
+      cursor:pointer;
+      font-weight:700;
+    }
+    .add:hover{background: rgba(124,58,237,.24)}
+
+    /* Sidebar */
+    .panel{
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .panel h3{margin:0 0 10px;font-size:16px}
+    .line{
+      height:1px;background:rgba(255,255,255,.08);margin:12px 0;
+    }
+    .chipRow{display:flex;gap:10px;flex-wrap:wrap}
+    .chip{
+      padding:8px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:rgba(255,255,255,.86);
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip.active{
+      background: rgba(34,197,94,.18);
+      border-color: rgba(34,197,94,.28);
+      color:#eafff3;
+    }
+
+    .cartItem{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+      padding:10px 0;
+    }
+    .miniThumb{
+      width:44px;height:44px;border-radius:14px;border:1px solid var(--border);
+      background: radial-gradient(24px 24px at 30% 30%, rgba(124,58,237,.45), transparent 70%),
+                  radial-gradient(24px 24px at 70% 60%, rgba(34,197,94,.30), transparent 70%),
+                  rgba(255,255,255,.04);
+      flex:0 0 auto;
+    }
+    .ciMain{flex:1;min-width:0}
+    .ciMain b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ciMain span{display:block;margin-top:2px;color:var(--muted);font-size:12px}
+    .qty{
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      padding:6px 8px;border-radius:14px;
+    }
+    .qty button{
+      width:26px;height:26px;border-radius:10px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      cursor:pointer;
+    }
+    .qty button:hover{background:rgba(255,255,255,.09)}
+    .sumRow{display:flex;align-items:center;justify-content:space-between;margin-top:10px;color:rgba(255,255,255,.9)}
+    .sumRow span{color:var(--muted)}
+    .checkout{
+      width:100%;
+      margin-top:12px;
+      padding:12px 14px;border-radius:16px;
+      border:1px solid rgba(34,197,94,.35);
+      background: rgba(34,197,94,.18);
+      cursor:pointer;
+      font-weight:800;
+    }
+    .checkout:hover{background: rgba(34,197,94,.24)}
+    .smallNote{
+      margin-top:10px;color:rgba(170,178,197,.78);font-size:12px;line-height:1.45;
+    }
+
+    /* Footer */
+    .footer{
+      margin-top:30px;
+      padding:18px 0 0;
+      color:rgba(170,178,197,.8);
+      font-size:13px;
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero{grid-template-columns: 1fr}
+      .main{grid-template-columns: 1fr}
+      .products{grid-template-columns: repeat(2, minmax(0,1fr))}
+    }
+    @media (max-width: 560px){
+      .products{grid-template-columns: 1fr}
+      .hero h1{font-size:36px}
+      .nav{display:none}
+    }
   </style>
 </head>
+
 <body>
-  <h1>OmniStore</h1>
-  <p><b>Terraform tabanlı AWS Cloud Architecture</b> — Security + CI/CD + FinOps odaklı.</p>
+  <div class="container">
 
-  <div class="card">
-    <h3>🧱 Mimari</h3>
-    <p>
-      <span class="pill">CloudFront</span>
-      <span class="pill">ALB</span>
-      <span class="pill">Private EC221121122121 (Docker)</span>
-      <span class="pill">Bastionss</span>
-    </p>
-    <p>Traffic: <code>CloudFront → ALB → Private EC2</code></p>
-  </div>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          OmniStore
+          <div style="font-weight:600;font-size:12px;color:var(--muted);margin-top:2px;">
+            Modern E-Ticaret • Hızlı • Güvenli • Kolay
+          </div>
+        </div>
+      </div>
 
-  <div class="card">
-    <h3>🔐 Security</h3>
-    <ul>
-      <li>Uygulama sunucuları <b>private subnet</b> içinde ve <b>public IP yok</b></li>
-      <li>SSH erişimi yalnızca <b>Bastion Host</b> üzerinden</li>
-      <li>ALB tek ingress noktası (least-privilege SG)</li>
-    </ul>
-  </div>
+      <nav class="nav" aria-label="primary">
+        <a href="#urunler">Ürünler</a>
+        <a href="#kampanya">Kampanya</a>
+        <a href="#teslimat">Teslimat</a>
+        <a href="#destek">Destek</a>
+      </nav>
 
-  <div class="card">
-    <h3>💰 FinOps</h3>
-    <ul>
-      <li>NAT Gateway yerine <b>NAT Instance</b> (maliyet optimizasyonu)</li>
-      <li>Terraform ile <b>destroy/apply</b> — idle resource önleme</li>
-    </ul>
-  </div>
+      <div class="actions">
+        <span class="pill">TR • ₺</span>
+        <button class="iconbtn" type="button" aria-label="Hesabım">
+          👤 <span style="color:var(--muted)">Hesabım</span>
+        </button>
+      </div>
+    </div>
 
-  <div class="card">
-    <h3>🚀 CI/CD</h3>
-    <p>Deploy pipeline: <code>GitHub Actions → Bastion → Private EC2</code></p>
-    <p><b>Last Deploy:</b> <span id="deploy">manual</span></p>
+    <div class="announce" id="kampanya">
+      <div>
+        <strong>🚀 Yeni sezon fırsatları</strong> — 1000₺ üzeri siparişlerde <b>ücretsiz kargo</b> + seçili ürünlerde <b>%20</b> indirim.
+      </div>
+      <span class="tag">⚡ 24 saatte kargo</span>
+    </div>
+
+    <section class="hero" aria-label="Hero">
+      <div class="heroCard">
+        <div class="heroInner">
+          <div class="pill" style="display:inline-flex;gap:8px;align-items:center;">
+            ✅ Güvenli ödeme • 🔁 Kolay iade • 📦 Hızlı teslimat
+          </div>
+
+          <h1>Alışverişin yeni <span style="color:var(--accent)">standart</span>ı.</h1>
+          <p>
+            OmniStore ile popüler ürünleri keşfet, favorilerini sepete ekle ve tek tıkla satın al.
+            Kampanyalar, hızlı teslimat ve güvenli ödeme deneyimi tek yerde.
+          </p>
+
+          <div class="heroActions">
+            <a class="btn btnPrimary" href="#urunler">🛍️ Ürünleri İncele</a>
+            <a class="btn btnGhost" href="#destek">💬 Canlı Destek</a>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <b>4.8/5</b>
+              <span>Müşteri memnuniyeti</span>
+            </div>
+            <div class="kpi">
+              <b>1–2 gün</b>
+              <span>Teslimat süresi</span>
+            </div>
+            <div class="kpi">
+              <b>14 gün</b>
+              <span>Kolay iade</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sideCard" aria-label="Search & Promo">
+        <div class="searchRow">
+          <input id="q" class="search" placeholder="Ürün ara (ör. kulaklık, laptop, kahve)..." />
+          <select id="cat" class="select" aria-label="Kategori">
+            <option value="all">Tümü</option>
+            <option value="tech">Teknoloji</option>
+            <option value="home">Ev & Yaşam</option>
+            <option value="fashion">Moda</option>
+          </select>
+        </div>
+
+        <div class="promo" id="teslimat">
+          <h4>🎁 İlk siparişe özel</h4>
+          <p><b>WELCOME10</b> koduyla sepette ekstra indirim.</p>
+          <div class="tiny">Kampanya sınırlı süreyle geçerlidir.</div>
+        </div>
+
+        <div class="panel">
+          <h3>Hızlı kategoriler</h3>
+          <div class="chipRow" role="list">
+            <span class="chip active" data-chip="all" role="listitem">Tümü</span>
+            <span class="chip" data-chip="tech" role="listitem">Teknoloji</span>
+            <span class="chip" data-chip="home" role="listitem">Ev & Yaşam</span>
+            <span class="chip" data-chip="fashion" role="listitem">Moda</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:12px">
+            <span class="pill">🔒 3D Secure</span>
+            <span class="pill">🧾 E-Fatura</span>
+            <span class="pill">♻️ İade garantisi</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="main" id="urunler" aria-label="Main content">
+      <div>
+        <div class="sectionTitle">
+          <div>
+            <h2>Öne Çıkan Ürünler</h2>
+            <p>Popüler seçimler • Güncel kampanyalar • Hızlı teslimat</p>
+          </div>
+          <div class="pill" id="count">8 ürün</div>
+        </div>
+
+        <div class="products" id="products"></div>
+      </div>
+
+      <aside class="panel" aria-label="Cart">
+        <h3>🧺 Sepetim</h3>
+        <div id="cartEmpty" style="color:var(--muted);font-size:13px;line-height:1.5;">
+          Sepetiniz boş. Ürün eklemek için “Sepete Ekle” butonunu kullanın.
+        </div>
+
+        <div id="cartList" style="display:none;"></div>
+
+        <div class="line"></div>
+
+        <div class="sumRow">
+          <span>Ara Toplam</span>
+          <b id="subtotal">0₺</b>
+        </div>
+        <div class="sumRow">
+          <span>Kargo</span>
+          <b id="shipping">0₺</b>
+        </div>
+        <div class="sumRow">
+          <span>Toplam</span>
+          <b id="total">0₺</b>
+        </div>
+
+        <button class="checkout" type="button">✅ Ödemeye Geç</button>
+        <div class="smallNote" id="destek">
+          Bu demo sayfası şu an statiktir. Gerçek sipariş/ödeme entegrasyonu daha sonra eklenecektir.
+        </div>
+      </aside>
+    </section>
+
+    <div class="footer">
+      <div>© <span id="year"></span> OmniStore</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <span class="pill">Güvenli Ödeme</span>
+        <span class="pill">Hızlı Teslimat</span>
+        <span class="pill">Kolay İade</span>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // İstersen buraya pipeline’dan deploy zamanı yazdırabiliriz
-    document.getElementById("deploy").innerText = new Date().toLocaleString();
+    const PRODUCTS = [
+      { id: "p1", cat: "tech", name: "Wireless Kulaklık Pro", desc: "Aktif gürültü engelleme • 30 saat pil • Type-C", price: 1499, old: 1899, rating: 4.7, badge: "%20 İndirim" },
+      { id: "p2", cat: "tech", name: "Akıllı Saat X", desc: "Sağlık takibi • GPS • Suya dayanıklı", price: 2199, old: 2499, rating: 4.6, badge: "Yeni" },
+      { id: "p3", cat: "home", name: "Aroma Kahve Makinesi", desc: "Programlanabilir • Otomatik kapanma • 1.5L", price: 1799, old: 0, rating: 4.8, badge: "Popüler" },
+      { id: "p4", cat: "home", name: "Akıllı LED Şerit", desc: "Uygulama kontrolü • RGB • 5m", price: 399, old: 499, rating: 4.5, badge: "Fırsat" },
+      { id: "p5", cat: "fashion", name: "Minimal Sneaker", desc: "Günlük kullanım • Hafif taban • Unisex", price: 1299, old: 1599, rating: 4.4, badge: "%15" },
+      { id: "p6", cat: "fashion", name: "Şehir Çantası", desc: "Laptop bölmesi • Su itici • 20L", price: 999, old: 1199, rating: 4.6, badge: "Bestseller" },
+      { id: "p7", cat: "tech", name: "Mekanik Klavye 75%", desc: "Hot-swap • RGB • Sessiz switch", price: 1899, old: 0, rating: 4.7, badge: "Pro" },
+      { id: "p8", cat: "home", name: "Air Fryer 4.5L", desc: "Az yağ • Dijital panel • Kolay temizlik", price: 2399, old: 2699, rating: 4.8, badge: "Hızlı Kargo" },
+    ];
+
+    const fmt = (n) => new Intl.NumberFormat("tr-TR").format(n) + "₺";
+
+    const state = {
+      q: "",
+      cat: "all",
+      cart: new Map(), // id -> qty
+    };
+
+    const $products = document.getElementById("products");
+    const $count = document.getElementById("count");
+    const $q = document.getElementById("q");
+    const $cat = document.getElementById("cat");
+
+    const $cartEmpty = document.getElementById("cartEmpty");
+    const $cartList = document.getElementById("cartList");
+    const $subtotal = document.getElementById("subtotal");
+    const $shipping = document.getElementById("shipping");
+    const $total = document.getElementById("total");
+
+    function filteredProducts(){
+      const q = state.q.trim().toLowerCase();
+      return PRODUCTS.filter(p => {
+        const matchesCat = state.cat === "all" ? true : p.cat === state.cat;
+        const matchesQ = q ? (p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)) : true;
+        return matchesCat && matchesQ;
+      });
+    }
+
+    function renderProducts(){
+      const list = filteredProducts();
+      $count.textContent = `${list.length} ürün`;
+
+      $products.innerHTML = list.map(p => `
+        <div class="product">
+          <div class="thumb" aria-hidden="true">
+            <div class="badgeCorner">${p.badge}</div>
+          </div>
+
+          <div class="pname">${p.name}</div>
+          <div class="pdesc">${p.desc}</div>
+
+          <div class="row">
+            <div class="price">
+              ${fmt(p.price)}
+              ${p.old ? `<span class="old">${fmt(p.old)}</span>` : ``}
+            </div>
+
+            <div class="rating" title="Puan">
+              <span class="stars">★</span> ${p.rating.toFixed(1)}
+            </div>
+          </div>
+
+          <button class="add" data-add="${p.id}" type="button">🛒 Sepete Ekle</button>
+        </div>
+      `).join("");
+
+      // bind
+      $products.querySelectorAll("[data-add]").forEach(btn => {
+        btn.addEventListener("click", () => addToCart(btn.getAttribute("data-add")));
+      });
+    }
+
+    function addToCart(id){
+      const cur = state.cart.get(id) || 0;
+      state.cart.set(id, cur + 1);
+      renderCart();
+    }
+
+    function changeQty(id, delta){
+      const cur = state.cart.get(id) || 0;
+      const next = cur + delta;
+      if(next <= 0) state.cart.delete(id);
+      else state.cart.set(id, next);
+      renderCart();
+    }
+
+    function calc(){
+      let subtotal = 0;
+      for(const [id, qty] of state.cart.entries()){
+        const p = PRODUCTS.find(x => x.id === id);
+        subtotal += (p.price * qty);
+      }
+      // simple shipping rule
+      const shipping = subtotal === 0 ? 0 : (subtotal >= 1000 ? 0 : 79);
+      const total = subtotal + shipping;
+      return { subtotal, shipping, total };
+    }
+
+    function renderCart(){
+      const { subtotal, shipping, total } = calc();
+
+      $subtotal.textContent = fmt(subtotal);
+      $shipping.textContent = fmt(shipping);
+      $total.textContent = fmt(total);
+
+      if(state.cart.size === 0){
+        $cartEmpty.style.display = "block";
+        $cartList.style.display = "none";
+        $cartList.innerHTML = "";
+        return;
+      }
+
+      $cartEmpty.style.display = "none";
+      $cartList.style.display = "block";
+
+      $cartList.innerHTML = Array.from(state.cart.entries()).map(([id, qty]) => {
+        const p = PRODUCTS.find(x => x.id === id);
+        return `
+          <div class="cartItem">
+            <div class="miniThumb" aria-hidden="true"></div>
+            <div class="ciMain">
+              <b title="${p.name}">${p.name}</b>
+              <span>${fmt(p.price)} • ${qty} adet</span>
+            </div>
+            <div class="qty">
+              <button type="button" data-dec="${id}">−</button>
+              <span style="min-width:18px;text-align:center">${qty}</span>
+              <button type="button" data-inc="${id}">+</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      $cartList.querySelectorAll("[data-dec]").forEach(b => b.addEventListener("click", () => changeQty(b.getAttribute("data-dec"), -1)));
+      $cartList.querySelectorAll("[data-inc]").forEach(b => b.addEventListener("click", () => changeQty(b.getAttribute("data-inc"), +1)));
+    }
+
+    function setCategory(cat){
+      state.cat = cat;
+      $cat.value = cat;
+      document.querySelectorAll(".chip").forEach(ch => ch.classList.toggle("active", ch.dataset.chip === cat));
+      renderProducts();
+    }
+
+    // Events
+    $q.addEventListener("input", (e) => {
+      state.q = e.target.value;
+      renderProducts();
+    });
+
+    $cat.addEventListener("change", (e) => setCategory(e.target.value));
+
+    document.querySelectorAll(".chip").forEach(ch => {
+      ch.addEventListener("click", () => setCategory(ch.dataset.chip));
+    });
+
+    // Init
+    document.getElementById("year").textContent = new Date().getFullYear();
+    renderProducts();
+    renderCart();
   </script>
 </body>
 </html>
