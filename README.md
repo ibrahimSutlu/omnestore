@@ -23,14 +23,7 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 
 ---
 
-## 🧩 Mimari Genel Bakış
 
-![OmniStore Architecture](docs/images/architecture.jpeg)
-
-**Trafik Akışı**
-
-
----
 
 ## 🧱 Temel Bileşenler
 
