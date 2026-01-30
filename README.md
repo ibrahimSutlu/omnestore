@@ -92,6 +92,7 @@ omnistore/
 │
 ├── .gitignore                  # Gereksiz dosyalar
 └── README.md                   # Proje dokümantasyonu
-'''
+---
+
 ## 📜 Lisans
 Bu proje MIT Lisansı ile lisanslanmıştır.
