@@ -22,15 +22,10 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 ![OmniStore UI](docs/images/ui.png)
 
 ---
+🏗️ AWS Architecture Overview
 
-## 🧩 Mimari Genel Bakış
+![OmniStore UI](docs/images/diagram.png)
 
-![OmniStore Architecture](docs/images/architecture.jpeg)
-
-**Trafik Akışı**
-
-
----
 
 ## 🧱 Temel Bileşenler
 
@@ -66,4 +61,33 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 ---
 
 ## 📂 Repository Yapısı
-
+```text
+omnistore/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # Frontend CI/CD (GitHub Actions → S3)
+│
+├── docs/
+│   ├── iam/                    # IAM policy & role dokümantasyonu
+│   └── s3/                     # S3 AMP policy & role örnekleri
+│
+├── infra/                      # Terraform Infrastructure
+│   ├── backend.tf              # S3 + DynamoDB state backend
+│   ├── main.tf                 # Ana infrastructure tanımı
+│   ├── variables.tf            # Input değişkenleri
+│   ├── outputs.tf              # Terraform output’ları
+│   ├── terraform.tfvars        # Ortam bazlı değişkenler (secret içermez)
+│   └── modules/
+│       ├── vpc/                # VPC, Subnet, Route Table
+│       ├── security/           # Security Group & IAM modülleri
+│       └── compute/            # EC2, ALB ve ilgili kaynaklar
+│
+├── omnistore-ui/               # Frontend (React)
+│   ├── src/                    # React source code
+│   ├── public/                 # Static assets
+│   ├── dist/                   # Build çıktısı
+│   ├── Dockerfile              # Frontend containerization
+│   └── nginx/                  # Opsiyonel reverse proxy / ingress config
+│
+├── .gitignore                  # Gereksiz dosyalar
+└── README.md                   # Proje dokümantasyonu
