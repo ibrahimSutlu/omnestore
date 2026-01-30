@@ -22,7 +22,8 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 ![OmniStore UI](docs/images/ui.png)
 
 ---
-🏗️ AWS Architecture Overview
+
+## 🏗️ AWS Architecture Overview
 
 ![OmniStore UI](docs/images/diagram.png)
 
