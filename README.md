@@ -66,4 +66,34 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 ---
 
 ## 📂 Repository Yapısı
-
+omnestore/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml        # Frontend CI/CD (GitHub Actions → S3 → CloudFront)
+│
+├── docs/
+│   └── iam/
+│       └── *.json            # IAM policy & role örnekleri (dokümantasyon amaçlı)
+│
+├── infra/
+│   ├── backend.tf            # Terraform backend (S3 + DynamoDB state)
+│   ├── main.tf               # Ana infrastructure tanımları
+│   ├── variables.tf          # Input değişkenleri
+│   ├── outputs.tf            # Output değerleri
+│   └── terraform.tfvars      # Ortam bazlı değişkenler (secret içermeden)
+│
+├── modules/
+│   ├── vpc/                  # VPC, subnet, route table modülü
+│   ├── security/             # Security Group & IAM modülleri
+│   └── compute/              # EC2 / ALB / ilgili kaynaklar
+│
+├── omnistore-ui/
+│   ├── src/                  # Frontend kaynak kodu (React)
+│   ├── public/
+│   ├── package.json
+│   └── dist/                 # CI/CD ile build edilen statik çıktı
+│
+├── Dockerfile                # Backend / future service containerization
+├── nginx-ingress.yaml        # (Opsiyonel) ingress / reverse proxy denemeleri
+├── .gitignore                # Hassas & gereksiz dosyalar ignore edilir
+└── README.md                 # Proje dokümantasyonu
