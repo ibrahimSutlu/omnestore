@@ -3,9 +3,19 @@
 **Modern, Cloud-Native E-Commerce Infrastructure**  
 *AWS · Terraform · CI/CD · Security · FinOps*
 
-OmniStore, staj sürecinde bulut altyapısı ve DevOps konularında pratik deneyim kazanmak amacıyla geliştirilmiş bir e-ticaret altyapı projesidir.
+Proje kapsamında altyapıyı Terraform kullanarak kod ile kurdum. Uygulamayı satın aldığım alan adı (domain) üzerinden yayınladım ve alan adı yönlendirmelerini Route53 ile yapılandırdım. Siteyi HTTPS üzerinden güvenli hale getirerek kullanıcıların erişimine açtım. İçeriklerin hızlı ve verimli sunulması için CloudFront kullandım.
 
-Proje, gerçek dünyada kullanılan yapılar örnek alınarak tasarlanmıştır. Altyapının kod ile kurulması, güvenli ağ  oluşturulması, otomatik dağıtım süreçleri ve temel maliyet kontrolü gibi konular uygulamalı olarak ele alınmıştır.
+Ayrıca bu projede;
+
+Açık ve kapalı ağ yapısını ayırarak güvenli bir ağ tasarımı oluşturdum
+
+Sunucuları genel IP olmadan kapalı ağda çalıştırdım
+
+Kod güncellemelerini otomatik dağıtım süreci ile yönettim
+
+Gereksiz kaynak kullanımını önleyerek temel maliyet kontrolü sağladım
+
+OmniStore ile amacım; bir stajyer olarak bulut altyapısı kurma, alan adı bağlama, güvenli yayın yapma ve otomatik dağıtım süreçlerini uçtan uca uygulayabildiğimi somut bir proje üzerinden göstermektir.
 
 ---
 
