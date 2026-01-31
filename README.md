@@ -19,12 +19,7 @@ OmniStore ile amacım; bir stajyer olarak bulut altyapısı kurma, alan adı ba�
 
 ---
 
-## 🌐 Live Demo
 
-🔗 **Frontend:** https://omnestore.org  
-🚀 **Deployment:** GitHub Actions üzerinden otomatik
-
----
 
 ## 🖥️ UI Preview
 
