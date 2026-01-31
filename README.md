@@ -27,38 +27,67 @@ Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps /
 
 ![OmniStore UI](docs/images/diagram.png)
 
-
 ## 🧱 Temel Bileşenler
 
-### ☁️ Cloud & Infrastructure
-- **AWS**
-- **Terraform (IaC)**
-- VPC (Public / Private Subnet)
-- Application Load Balancer (ALB)
-- CloudFront + ACM (TLS)
-- Route53 (DNS)
+### ☁️ Bulut ve Altyapı
+- Sistem AWS üzerinde çalışmaktadır
+- Altyapı Terraform ile kod olarak tanımlanmıştır
+- Sanal ağ (VPC) yapısı:
+  - Açık ağ (Public Subnet)
+    - Yük dengeleyici (ALB)
+    - Bastion sunucusu
+  - Kapalı ağ (Private Subnet)
+    - Uygulama sunucuları
+- Yük dengeleyici (ALB)
+  - Gelen istekleri uygulama sunucularına yönlendirir
+  - HTTP isteklerini HTTPS’e çevirir
+- CloudFront
+  - İçerikleri kullanıcılara en yakın noktadan sunar
+- ACM
+  - HTTPS için güvenlik sertifikası sağlar
+- Route53
+  - Alan adı ve yönlendirme işlemlerini yönetir
 
-### 🔐 Security First Design
-- Application sunucuları **private subnet**
-- **Public IP yok**
-- SSH erişimi yalnızca **Bastion Host** üzerinden
-- Least-privilege Security Groups
-- IAM role-based access
+---
 
-### 🚀 CI/CD
-- **GitHub Actions**
-- Otomatik:
-  - Build
-  - S3 deploy
-  - CloudFront cache invalidation
-- Zero-downtime frontend deployment
+## 🔐 Güvenlik Yapısı
+- Uygulama sunucuları yalnızca kapalı ağda çalışır
+- Sunucuların genel IP adresi yoktur
+- Sunuculara erişim:
+  - Sadece Bastion sunucusu üzerinden yapılır
+- Güvenlik kuralları:
+  - Yalnızca gerekli portlar açıktır
+  - Sunucular birbiriyle sınırlı şekilde iletişim kurar
+- Yetkilendirme:
+  - Erişimler rol bazlı tanımlanmıştır
+  - Gizli bilgiler kod içinde tutulmaz
 
-### 💰 FinOps Odaklı Yaklaşım
-- Gereksiz kaynakların önlenmesi
-- Terraform `apply / destroy` lifecycle
-- Managed servisler ile operasyonel yük azaltma
-- CDN ile bandwidth maliyet optimizasyonu
+---
 
+## 🚀 Otomatik Dağıtım Süreci
+- Kod gönderimleri GitHub Actions ile otomatik olarak işlenir
+- Her güncellemede:
+  - Proje derlenir
+  - Dosyalar S3 üzerine yüklenir
+  - CloudFront önbelleği temizlenir
+- Güncelleme sırasında:
+  - Kullanıcı tarafında kesinti yaşanmaz
+- Gerekli durumlarda:
+  - Bastion üzerinden sunuculara bakım yapılabilir
+
+---
+
+## 💰 Maliyet Yönetimi
+- Gereksiz kaynak kullanımı önlenmiştir
+- Tüm altyapı Terraform ile yönetildiği için:
+  - Kolayca kurulup kaldırılabilir
+- Hazır servisler kullanılarak:
+  - Yönetim yükü azaltılmıştır
+- CloudFront sayesinde:
+  - İnternet trafiği maliyeti düşürülür
+  - Sunucu üzerindeki yük azaltılır
+- Deneme ve canlı ortamlar:
+  - Ayrı ayrı kontrol edilebilir
 ---
 
 ## 📂 Repository Yapısı
