@@ -1,4 +1,4 @@
-# 🛒 OmniStore
+# 🛒 OmneStore
 
 **Modern, Cloud-Native E-Commerce Infrastructure**  
 *AWS · Terraform · CI/CD · Security · FinOps*
