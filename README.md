@@ -3,8 +3,9 @@
 **Modern, Cloud-Native E-Commerce Infrastructure**  
 *AWS · Terraform · CI/CD · Security · FinOps*
 
-OmniStore, gerçek dünya e-ticaret senaryoları baz alınarak tasarlanmış, **güvenli, ölçeklenebilir ve maliyet odaklı** bir bulut mimarisi projesidir.  
-Projenin amacı yalnızca bir uygulama çalıştırmak değil; **modern DevOps / Cloud Engineering pratiklerini uçtan uca göstermektir.**
+OmniStore, staj sürecinde bulut altyapısı ve DevOps konularında pratik deneyim kazanmak amacıyla geliştirilmiş bir e-ticaret altyapı projesidir.
+
+Proje, gerçek dünyada kullanılan yapılar örnek alınarak tasarlanmıştır. Altyapının kod ile kurulması, güvenli ağ  oluşturulması, otomatik dağıtım süreçleri ve temel maliyet kontrolü gibi konular uygulamalı olarak ele alınmıştır.
 
 ---
 
