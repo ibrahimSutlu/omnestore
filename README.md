@@ -15,7 +15,6 @@ Kod güncellemelerini otomatik dağıtım süreci ile yönettim
 
 Gereksiz kaynak kullanımını önleyerek temel maliyet kontrolü sağladım
 
-OmniStore ile amacım; bir stajyer olarak bulut altyapısı kurma, alan adı bağlama, güvenli yayın yapma ve otomatik dağıtım süreçlerini uçtan uca uygulayabildiğimi somut bir proje üzerinden göstermektir.
 
 ---
 
